@@ -3,17 +3,22 @@
     <div class="row">
       <div class="col-xs-12">
         <label>Food</label>
-        <input type="text" [(ngModel)]="foodName" class="form-control">
+        <input type="text" #inputFood [(ngModel)]="foodName" class="form-control">
         <label>Description</label>
-        <input type="text" [(ngModel)]="desc" class="form-control">
+        <input type="text" #inputDesc [(ngModel)]="desc" class="form-control">
         <label>Photo</label>
-        <input type="text" [(ngModel)]="img" class="form-control">
-        <button *ngIf="foodName && desc && img" (click)="onRecipeAdded()" type="button" class="btn btn-success">New Recipe</button>
+        <input type="text" #inputImg [(ngModel)]="img" class="form-control">
+        <button
+        [disabled]="(inputFood.value && inputDesc.value ? false : true)"
+        (click)="onRecipeAdded(inputFood.value, inputDesc.value, inputImg.value)"
+        type="button"
+        class="btn btn-success"
+        >New Recipe</button>
       </div>
       <hr>
       <div class="col-xs-12">
         <app-recipe-listitem
-          *ngFor="let item of recipes"
+          *ngFor="let item of results"
           [curItem]="item"
         ></app-recipe-listitem>
       </div>

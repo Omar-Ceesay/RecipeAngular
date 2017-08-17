@@ -1,4 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+// import * as mongoose from 'mongoose';
+// mongoose.connect('mongodb://localhost/recipeBook');
+
+// const RecipeSchema = new mongoose.Schema({
+//   name: String,
+//   description: String,
+//   imagePath: String
+// });
+
 
 import Recipe from './recipe.model';
 
@@ -8,32 +19,35 @@ import Recipe from './recipe.model';
   styleUrls: ['./recipe-book.component.css']
 })
 export class RecipeBookComponent implements OnInit {
-  recipes: Recipe[] = [
-    new Recipe('Tacos', 'Mexican Food', 'http://vilascounty.uwex.edu/files/2013/12/Recipes-Title.png'),
-    new Recipe('Pizza', 'American  Food', 'http://vilascounty.uwex.edu/files/2013/12/Recipes-Title.png'),
-    new Recipe('Salad', 'Vegan Food', 'http://vilascounty.uwex.edu/files/2013/12/Recipes-Title.png')
-  ];
 
-  btnCheck = false;
+  results: {};
 
-  foodName: string;
-  img: string;
-  desc: string;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  onRecipeAdded(recipeData: {name: string, desc: string, path: string}) {
-    this.recipes.push({
-      name: this.foodName,
-      description: this.desc,
-      imagePath: this.img
+  reloadRecipes() {
+    this.http.get('http://localhost:3003/api/recipes').subscribe(data => {
+      this.results = data;
     });
   }
 
-  checkFields() {
-    this.btnCheck = true;
+  constructor(private http: HttpClient) {
   }
+
+  ngOnInit() {
+    this.http.get('http://localhost:3003/api/recipes').subscribe(data => {
+      // Read the result field from the JSON response.
+      this.results = data;
+    });
+  }
+
+  onRecipeAdded(food, desc, img) {
+    if (!img) {
+      img = 'http://vilascounty.uwex.edu/files/2013/12/Recipes-Title.png';
+    }
+    this.http.post('http://localhost:3003/api/recipes', {
+      name: food,
+      description: desc,
+      imagePath: img
+    }).subscribe();
+    this.reloadRecipes();
+  }
+
 }
