@@ -22,10 +22,11 @@ export class RecipeBookComponent implements OnInit {
 
   results: {};
 
-  reloadRecipes() {
+  reloadRecipes = () => {
     this.http.get('http://localhost:3003/api/recipes').subscribe(data => {
       this.results = data;
     });
+    console.log('Reload!');
   }
 
   constructor(private http: HttpClient) {
